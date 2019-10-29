@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'pastel'
+require 'tty-spinner'
+require 'sktl_to_liquid'
+
+options = {}
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: sktl_to_liquid --sktl directory/with/.sktl --liquid directory/to/output/.liquid"
+
+  opts.on("-s", "--sktl SKTL", "Location of directory with SKTL files") do |v|
+    options[:sktl] = v
+  end
+
+  opts.on("-l", "--liquid LIQUID", "Location of directory to output Liquid files") do |v|
+    options[:liquid] = v
+  end
+end
+
+begin
+  optparse.parse!
+  missing = [:sktl, :liquid].select{ |param| options[param].nil? }
+
+  unless missing.empty?
+    raise OptionParser::MissingArgument.new(missing.join(', '))
+  end
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+  puts $!.to_s
+  puts optparse
+  exit
+end
+
+pastel = Pastel.new
+
+puts <<~TEXT
+                                    @&
+                             &&     &&&
+                             &&     &&&
+&&&&&&&&   #{pastel.green("%######%")}  &&&&&&  &&&&&& &&&&&&&&  &&&&&&&@  &&&&&&&  @&&&&&& @&&&&&&&
+&&&   &&& #{pastel.green("##########")} &&&     &&     &&&   &&  &&    &&&      &&& &&&     &&&
+&&&   &&& #{pastel.green("###    ###")} &&&     &&     &&&   &&& &&    &&& &&&&&&&&  &&&&&@   &&&&&@
+&&&   &&& #{pastel.green("#  %##%  #")} &&&     &&     &&&   &&& &&    &&& &&   &&&      &&       &&
+&&&   &&&   #{pastel.green("######")}   &&&     &&&&&& &&&   &&& &&&&&&&   &&&&&&&& &&&&&&& &&&&&&&&
+                                              &&
+                                              &&
+TEXT
+
+sktl_files = Dir.entries(options[:sktl]).select do |file_name|
+  File.extname(file_name) == '.sktl'
+end
+
+sktl_files.each do |file_name|
+  new_name = file_name.gsub('sktl', 'liquid')
+
+  spinner = TTY::Spinner.new(
+    "[:spinner] #{file_name} ---> #{new_name}",
+    success_mark: pastel.green('✔'),
+    error_mark: pastel.red('x')
+  )
+  spinner.auto_spin
+
+  body = File.read("#{options[:sktl]}/#{file_name}")
+
+  File.open("#{options[:liquid]}/#{new_name}", 'w') do |f|
+    begin
+      f.write SktlToLiquid::Converter.new(body).convert
+    rescue StandardError => e
+      spinner.error
+      puts "-------------\n #{e} \n-------------"
+      next
+    end
+  end
+
+  spinner.success
+end
