@@ -1,38 +1,30 @@
 # SktlToLiquid
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/sktl_to_liquid`. To experiment with that code, run `bin/console` for an interactive prompt.
+Converter for [Northpass](https://www.northpass.com/) custom templates. Converts **.sktl** files to **.liquid** files.
 
-TODO: Delete this and the text above, and describe your gem
+## Before you start
+
+This is **not** a fully featured .sktl -> .liquid converter. It was written to smoothly transfer our clients to **liquid** templates and covers only needed part for that. Successfully converted 99.6 % of our clients templates.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Run in terminal
 
-```ruby
+```bash
 gem 'sktl_to_liquid'
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install sktl_to_liquid
-
 ## Usage
 
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```
+Usage: sktl_to_liquid --sktl directory/with/.sktl --liquid directory/to/output/.liquid
+    -s, --sktl SKTL                  Location of directory with SKTL files
+    -l, --liquid LIQUID              Location of directory to output Liquid files
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sktl_to_liquid.
+Bug reports and pull requests are welcome on GitHub at https://github.com/SchoolKeep/sktl_to_liquid.
 
 ## License
 
