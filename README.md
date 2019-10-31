@@ -11,7 +11,7 @@ This is **not** a fully featured .sktl -> .liquid converter. It was written to s
 Run in terminal
 
 ```bash
-gem 'sktl_to_liquid'
+gem install sktl_to_liquid
 ```
 
 ## Usage
